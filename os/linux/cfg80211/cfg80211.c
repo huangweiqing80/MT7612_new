@@ -3052,7 +3052,7 @@ static INT CFG80211NetdevNotifierEvent(struct notifier_block *nb, ULONG state, V
 	if (!pWdev || !pWdev->wiphy)
 		return NOTIFY_DONE;
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 13, 0)
 	/* GeK: [todo] Saker's workaround since NXTC.MT76x2#109260 */
 	if (NETDEV_POST_INIT)
 		return NOTIFY_DONE;

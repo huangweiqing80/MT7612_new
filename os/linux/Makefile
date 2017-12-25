@@ -1,77 +1,4 @@
-PLATFORM = HISILICON
-ifeq ($(WIFI_MODE),)
-RT28xx_MODE = STA
-else
-RT28xx_MODE = $(WIFI_MODE)
-endif
-
-ifeq ($(CHIPSET),)
-CHIPSET = mt7662u mt7632u mt7612u mt7662tu mt7632tu mt7612tu
-endif
-
-MODULE = $(word 3, $(CHIPSET))
-
-ifeq ($(CFG_HI_EXPORT_FLAG),)
-    ifneq ($(srctree),)
-    KERNEL_DIR := $(srctree)
-
-    SDK_DIR := $(shell cd $(KERNEL_DIR)/../../.. && /bin/pwd)
-    else
-    SDK_DIR := $(shell cd $(CURDIR)/../../../../../.. && /bin/pwd)
-    endif
-
-    include $(SDK_DIR)/base.mak
-endif
-
-RT28xx_DIR = $(COMPONENT_DIR)/wifi/drv/usb_mt76x2u/JEDI.MP2.mt76x2u.wifi.v3.3.2
-
 include $(RT28xx_DIR)/os/linux/config.mk
-
-OUT_STA_KO = $(RT28xx_DIR)/os/linux/$(MODULE)_sta.ko
-
-ifeq ($(LINUX_SRC),)
-#LINUX_SRC = ../../../../../../kernel/linux-3.10.y
-LINUX_SRC=~/stb/98mv200_android4.4_sz/out/target/product/Hi3798MV200/obj/KERNEL_OBJ/
-endif
-LINUX_SRC_MODULE = $(LINUX_SRC)/drivers/net/wireless
-ifeq ($(CROSS_COMPILE),)
-CROSS_COMPILE = arm-histbv310-linux-
-endif
-
-###########################################################PREALLOC############################################################
-MOD_NAME_PREALLOC = mtprealloc76x2
-
-
-#ifdef CONFIG_STA_SUPPORT
-ifeq ($(RT28xx_MODE), STA)
-$(MOD_NAME_PREALLOC)-objs := \
-	prealloc.o
-endif
-#endif // CONFIG_STA_SUPPORT //
-
-
-#ifdef CONFIG_APSTA_SUPPORT
-ifeq ($(RT28xx_MODE), APSTA)
-$(MOD_NAME)-objs := \
-	prealloc.o
-
-ifeq ($(PLATFORM),BL2348)
-$(MOD_NAME)-objs += \
-	../../os/linux/vr_bdlt.o
-endif
-
-ifeq ($(PLATFORM),BLUBB)
-$(MOD_NAME)-objs += \
-	../../os/linux/vr_bdlt.o
-endif
-
-ifeq ($(HAS_BGFP_SUPPORT),y)
-$(MOD_NAME_PREALLOC)-objs += \
-	../../os/linux/br_ftph.o
-endif
-endif
-#endif // CONFIG_APSTA_SUPPORT //
-###########################################################PREALLOC############################################################
 
 obj_ap :=
 obj_sta :=
@@ -389,8 +316,7 @@ endif
 #
 ###############################################################################
 
-obj-m := $(MOD_NAME).o $(MOD_NAME_PREALLOC).o
-
+obj-m := $(MOD_NAME).o
 
 #ifdef CONFIG_AP_SUPPORT
 ifeq ($(RT28xx_MODE),AP)

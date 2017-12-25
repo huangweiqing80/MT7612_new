@@ -12,18 +12,23 @@ ifeq ($(CHIPSET),)
 CHIPSET = mt7662u mt7632u mt7612u mt7662tu mt7632tu mt7612tu
 endif
 
+ifneq ($(TARGET),THREADX)
+#RT28xx_DIR = home directory of RT28xx source code
+RT28xx_DIR = $(shell pwd)
+endif
+
 MODULE = $(word 1, $(CHIPSET))
 
 PREALLOC=YES
 
 #PLATFORM: Target platform
-#PLATFORM = PC
+PLATFORM = PC
 #PLATFORM = MT85XX_AUDIO
 #PLATFORM = MT85XX_BDP
 #PLATFORM = MT53XX
 #PLATFORM = WEBOS
 #PLATFORM = MSTAR
-PLATFORM = HISILICON
+#PLATFORM = HISILICON
 #PLATFORM = MSTAR_LINUX
 #PLATFORM = ALPS_MT8173
 
@@ -44,9 +49,9 @@ endif
 
 ifeq ($(PLATFORM),MSTAR_LINUX)
 # 3.1.10
-LINUX_SRC =
+LINUX_SRC = /home/hwq/Wifi_Driver_Env/3.10.23_keres_keries_sz_mi/3.10.23
 # arm-2012.09
-CROSS_COMPILE =
+CROSS_COMPILE = /home/hwq/Wifi_Driver_Env/mips-4.8.3/bin/mips-linux-gnu-
 endif
 
 ifeq ($(PLATFORM),ALPS_MT8173)
@@ -152,7 +157,7 @@ ifeq ($(PREALLOC), YES)
 endif
 	cp -f os/linux/Makefile.6 os/linux/Makefile
 	$(MAKE) -C $(LINUX_SRC) SUBDIRS=$(RT28xx_DIR)/os/linux modules
-	$(CROSS_COMPILE)strip --strip-unneeded $(OUT_STA_KO)
+	$(CROSS_COMPILE)strip --strip-unneeded $(RT28xx_DIR)/os/linux/$(MODULE)_sta.ko
 
 ifeq ($(PLATFORM),HISILICON)
 	$(CROSS_COMPILE)strip --strip-debug $(RT28xx_DIR)/os/linux/$(MODULE)_sta.ko
